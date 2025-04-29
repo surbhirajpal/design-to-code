@@ -1,0 +1,214 @@
+[
+  {
+    "id": "1:2868",
+    "type": "INSTANCE",
+    "name": "card",
+    "children": [
+      {
+        "id": "I1:2868;1672:482048",
+        "type": "FRAME",
+        "name": "card-header",
+        "children": [
+          {
+            "id": "I1:2868;1672:482050",
+            "type": "INSTANCE",
+            "name": "text/text",
+            "children": [
+              {
+                "id": "I1:2868;1672:482050;1:4738",
+                "type": "TEXT",
+                "name": "text",
+                "characters": "Card Header"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "I1:2868;1:9488",
+        "type": "FRAME",
+        "name": "wrapper",
+        "children": [
+          {
+            "id": "I1:2868;1:9489",
+            "type": "FRAME",
+            "name": "image",
+            "children": [
+              {
+                "id": "I1:2868;1:9490",
+                "type": "INSTANCE",
+                "name": "image",
+                "children": [
+                  {
+                    "id": "I1:2868;1:9490;301:244270",
+                    "type": "FRAME",
+                    "name": "Aspect ratio keeper # Rotated Auto Layout"
+                  },
+                  {
+                    "id": "I1:2868;1:9490;1887:520040",
+                    "type": "RECTANGLE",
+                    "name": "image-placeholder <- Change image here"
+                  }
+                ]
+              },
+              {
+                "id": "I1:2868;1:9491",
+                "type": "INSTANCE",
+                "name": "size-adjuster",
+                "children": [
+                  {
+                    "id": "I1:2868;1:9491;1:15912",
+                    "type": "RECTANGLE",
+                    "name": "_ignore"
+                  },
+                  {
+                    "id": "I1:2868;1:9491;1:15913",
+                    "type": "RECTANGLE",
+                    "name": "_ignore"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "I1:2868;1:9492",
+            "type": "FRAME",
+            "name": "content",
+            "children": [
+              {
+                "id": "I1:2868;1672:482230",
+                "type": "FRAME",
+                "name": "card-body",
+                "children": [
+                  {
+                    "id": "I1:2868;1672:482424",
+                    "type": "INSTANCE",
+                    "name": "card-title",
+                    "children": [
+                      {
+                        "id": "I1:2868;1672:482424;1639:446504",
+                        "type": "TEXT",
+                        "name": "text",
+                        "characters": "Card Title"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "I1:2868;1672:482425",
+                    "type": "INSTANCE",
+                    "name": "card-subtitle",
+                    "children": [
+                      {
+                        "id": "I1:2868;1672:482425;1639:446504",
+                        "type": "TEXT",
+                        "name": "text",
+                        "characters": "Sub Title"
+                      }
+                    ]
+                  },
+                  {
+                    "id": "I1:2868;1672:482232",
+                    "type": "INSTANCE",
+                    "name": "card-text",
+                    "children": [
+                      {
+                        "id": "I1:2868;1672:482232;1:4720",
+                        "type": "TEXT",
+                        "name": "text",
+                        "characters": "Some quick example text to build on the card title and make up the bulk of the card's content."
+                      },
+                      {
+                        "id": "I1:2868;1672:482232;339:247615",
+                        "type": "FRAME",
+                        "name": "min-width <- change size here",
+                        "children": [
+                          {
+                            "id": "I1:2868;1672:482232;339:247616",
+                            "type": "RECTANGLE",
+                            "name": "_ignore"
+                          },
+                          {
+                            "id": "I1:2868;1672:482232;339:247617",
+                            "type": "RECTANGLE",
+                            "name": "_ignore"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "I1:2868;1672:482233",
+                    "type": "INSTANCE",
+                    "name": "button-list",
+                    "children": [
+                      {
+                        "id": "I1:2868;1672:482233;1:9344",
+                        "type": "INSTANCE",
+                        "name": "button",
+                        "children": [
+                          {
+                            "id": "I1:2868;1672:482233;1:9344;288:222124",
+                            "type": "INSTANCE",
+                            "name": "text",
+                            "children": [
+                              {
+                                "id": "I1:2868;1672:482233;1:9344;288:222124;1:4738",
+                                "type": "TEXT",
+                                "name": "text",
+                                "characters": "Go somewhere"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": "I1:2868;1672:482369",
+                "type": "FRAME",
+                "name": "card-body",
+                "children": [
+                  {
+                    "id": "I1:2868;1672:482370",
+                    "type": "INSTANCE",
+                    "name": "layout-blocks/horizontal×2",
+                    "children": [
+                      {
+                        "id": "I1:2868;1672:482370;1:15822",
+                        "type": "INSTANCE",
+                        "name": "text/text",
+                        "children": [
+                          {
+                            "id": "I1:2868;1672:482370;1:15822;1:4740",
+                            "type": "TEXT",
+                            "name": "text",
+                            "characters": "Card link"
+                          }
+                        ]
+                      },
+                      {
+                        "id": "I1:2868;1672:482370;1:15823",
+                        "type": "INSTANCE",
+                        "name": "text/text",
+                        "children": [
+                          {
+                            "id": "I1:2868;1672:482370;1:15823;1:4740",
+                            "type": "TEXT",
+                            "name": "text",
+                            "characters": "Another link"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

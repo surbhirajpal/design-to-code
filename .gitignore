@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+#ignore env files to push to github - avoid pushing secret keys
+.env
+.env.local

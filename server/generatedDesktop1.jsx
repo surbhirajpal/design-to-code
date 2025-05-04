@@ -1,7 +1,6 @@
 ```jsx
 import React from 'react';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
+import { Card, Button } from 'react-bootstrap';
 
 const MyComponent = () => (
   <Card>
@@ -25,4 +24,4 @@ const MyComponent = () => (
 export default MyComponent;
 ```
 
-This JSX code represents the Figma nodes as React-Bootstrap components. The Card component is used to represent the overall card, with Card.Header, Card.Img, Card.Body, Card.Title, Card.Subtitle, Card.Text, Button, and Card.Link components used to represent the corresponding parts of the card. The text for each component is taken from the "characters" field of the corresponding Figma node. The image source for the Card.Img component is a placeholder and should be replaced with the actual image source.
+This is a simplified version of the JSX code. In a real-world scenario, you would probably want to make the image source, button link, and text content dynamic by passing them as props or getting them from your application's state. Also, the image placeholder text should be replaced with the actual image URL.

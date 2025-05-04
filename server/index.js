@@ -1,5 +1,6 @@
 import express from "express";
 import axios from "axios";
+import cors from "cors";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
@@ -7,25 +8,21 @@ import { fileURLToPath } from "url";
 
 dotenv.config();
 
-// Fix __dirname for ESM (import/export style)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 4000;
 
+app.use(cors({ origin: "http://localhost:5173" }));
 app.use(express.json());
 
-// ---------------------------
-// Route: Server Status
-// ---------------------------
+/** Health Check **/
 app.get("/", (req, res) => {
-  res.send("🎯 Design-to-Code Automation Server is Running!");
+  res.send("🎯 Design-to-Code Server is Running!");
 });
 
-// ---------------------------
-// Route: Fetch Figma Data
-// ---------------------------
+/** Fetch Figma Nodes **/
 app.get("/fetch-figma", async (req, res) => {
   try {
     const response = await axios.get(
@@ -41,98 +38,87 @@ app.get("/fetch-figma", async (req, res) => {
     );
 
     const figmaData = response.data;
-
     const savePath = path.join(__dirname, "figmaData.json");
     fs.writeFileSync(savePath, JSON.stringify(figmaData, null, 2));
 
-    console.log(`✅ Full Figma JSON saved at ${savePath}`);
-    res
-      .status(200)
-      .json({ message: "Figma JSON fetched and saved!", path: savePath });
+    console.log(`✅ Figma JSON saved at ${savePath}`);
+    res.status(200).json({ message: "Figma JSON saved", path: savePath });
   } catch (error) {
     console.error("❌ Error fetching Figma data:", error.message || error);
     res.status(500).json({ error: "Failed to fetch Figma data" });
   }
 });
 
-// ---------------------------
-// Helper: Clean node data
-// ---------------------------
+/** Clean minimal structure recursively + remove hidden **/
 function extractMinimalData(node) {
-  if (node.visible === false) {
-    // Skip hidden nodes completely
-    return null;
-  }
+  if (node.visible === false) return null;
 
   const minimal = {
     id: node.id,
-    type: node.type,
     name: node.name,
+    type: node.type,
   };
 
-  if (node.characters) {
-    minimal.characters = node.characters;
-  }
+  if (node.characters) minimal.characters = node.characters;
 
   if (node.children) {
-    const cleanedChildren = node.children
+    const visibleChildren = node.children
       .map(extractMinimalData)
-      .filter((child) => child !== null); // Remove hidden/null children
-    if (cleanedChildren.length > 0) {
-      minimal.children = cleanedChildren;
+      .filter(Boolean); // remove nulls
+    if (visibleChildren.length > 0) {
+      minimal.children = visibleChildren;
     }
   }
 
   return minimal;
 }
 
-// ---------------------------
-// Route: Generate Code from Figma JSON
-// ---------------------------
+/** Generate React-Bootstrap Code **/
 app.get("/generate-code", async (req, res) => {
   try {
     const figmaDataPath = path.join(__dirname, "figmaData.json");
     if (!fs.existsSync(figmaDataPath)) {
-      return res
-        .status(400)
-        .json({ error: "figmaData.json not found. Fetch Figma data first!" });
+      return res.status(400).json({
+        error: "figmaData.json not found. Fetch Figma data first!",
+      });
     }
 
     const figmaData = JSON.parse(fs.readFileSync(figmaDataPath, "utf8"));
-
     const rawChildren =
       figmaData.nodes[process.env.FIGMA_NODE_ID].document.children;
 
-    // Clean children recursively
-    const minimalChildren = rawChildren.map(extractMinimalData);
+    const minimalChildren = rawChildren.map(extractMinimalData).filter(Boolean); // Filter out null from root level
 
-    const cleanPath = path.join(__dirname, "figmaChildrenClean.json");
-    fs.writeFileSync(cleanPath, JSON.stringify(minimalChildren, null, 2));
-
-    console.log(`✅ Cleaned Children JSON saved at ${cleanPath}`);
-
-    // Build prompt dynamically
     const prompt = `
-You are a frontend assistant specializing in Bootstrap and React.
+You are a React frontend assistant.
 
-Given the following simplified Figma nodes:
+Input: A simplified set of Figma nodes. Each node includes:
+- type (e.g., TEXT, RECTANGLE, FRAME)
+- name (e.g., Card, Button, Header)
+- characters: visible content text (if present)
+- children (optional nested nodes)
+
+Your job:
+- Convert this structure to JSX using React Bootstrap.
+- Use only content and structure found in the JSON — no assumptions.
+- Use "characters" exactly as text/labels.
+- Use "name" and "type" to infer Bootstrap components (Card, Button, etc).
+- Do NOT add dummy content (e.g., placeholder images, Card.Footer, repeated links).
+- Do NOT repeat or fabricate anything.
+- Generate valid, clean JSX code in a functional component.
+- - Output only the JSX inside the Bootstrap Card component — no outer function, no imports, no export.
+- Return only raw JSX — no markdown, no wrapping, no explanation.
+
+Input Figma nodes:
 ${JSON.stringify(minimalChildren, null, 2)}
-
-Task:
-- Detect real UI components (Button, Card, Navbar, etc.)
-- Map them into react-bootstrap components.
-- Maintain hierarchy if children exist.
-- Use node.name and characters for labels/text.
-- Only output clean JSX code.
 
 Output:
 `;
 
-    // Call OpenAI manually via Axios
     const openaiResponse = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
-        model: "gpt-4", // or gpt-3.5-turbo
+        model: "gpt-4",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.2,
         max_tokens: 1500,
@@ -146,14 +132,13 @@ Output:
     );
 
     const generatedCode = openaiResponse.data.choices[0].message.content;
+    // Remove Markdown wrapping if present
+    const cleanCode = generatedCode
+      .replace(/^```(?:jsx)?\n?/, "")
+      .replace(/```$/, "");
 
-    const outputPath = path.join(__dirname, "generatedDesktop1.jsx");
-    fs.writeFileSync(outputPath, generatedCode);
-
-    console.log(`✅ Generated React Bootstrap code saved at ${outputPath}`);
-    res
-      .status(200)
-      .json({ message: "Generated code saved!", path: outputPath });
+    console.log("✅ Code generated via OpenAI");
+    res.status(200).json({ code: cleanCode });
   } catch (error) {
     console.error(
       "❌ Error generating code:",
@@ -163,9 +148,6 @@ Output:
   }
 });
 
-// ---------------------------
-// Start the server
-// ---------------------------
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
